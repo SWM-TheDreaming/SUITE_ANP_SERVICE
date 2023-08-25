@@ -6,9 +6,12 @@ plugins {
 
 group = 'com.suite'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
 
-java {
-	sourceCompatibility = '11'
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
@@ -16,8 +19,24 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.projectlombok:lombok:1.18.26'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//testImplementation 'org.springframework.security:spring-security-test'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.7.8'
+	//sql
+	runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+	//mongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	//security && JWT
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	//implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+
 }
 
 tasks.named('test') {
