@@ -1,6 +1,7 @@
 package com.suite.suite_anp_service.anp.entity;
 
 import com.suite.suite_anp_service.baseTime.BaseTimeMongoEntity;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -21,4 +22,12 @@ public class AnpOfMember {
 
     @Column(name = "alarm_count")
     private Long alarmCount;
+
+    @Builder
+    public AnpOfMember(Long memberId, String fcmToken, Long point, Long alarmCount) {
+        this.memberId = memberId;
+        this.fcmToken = fcmToken;
+        this.point = point;
+        this.alarmCount = alarmCount;
+    }
 }

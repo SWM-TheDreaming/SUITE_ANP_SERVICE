@@ -36,7 +36,8 @@ dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	//implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
-
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+	implementation 'org.springframework.kafka:spring-kafka:2.8.5'
 }
 
 tasks.named('test') {
