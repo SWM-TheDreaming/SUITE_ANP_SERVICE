@@ -1,5 +1,6 @@
 package com.suite.suite_anp_service.kafka.consumer;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.suite.suite_anp_service.anp.entity.AnpOfMember;
 import com.suite.suite_anp_service.anp.repository.AnpOfMemberRepository;
 import com.suite.suite_anp_service.slack.SlackMessage;
@@ -17,10 +18,9 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class SuiteAnpConsumer implements AcknowledgingMessageListener<String, String> {
+public class SuiteAnpConsumer {
     private final AnpOfMemberRepository anpOfMemberRepository;
-    private final SlackMessage slackMessage;
-    @Override
+    /*@Override
     @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite")
     public void onMessage(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         JSONParser parser = new JSONParser();
@@ -28,9 +28,9 @@ public class SuiteAnpConsumer implements AcknowledgingMessageListener<String, St
         try {
             while(retryCount < 3) {
                 try {
-                    /*if(retryCount < 3) {
+                    *//*if(retryCount < 3) {
                         throw new RuntimeException("Intentional error for testing");
-                    }*/
+                    }*//*
                     JSONObject jsonObject = (JSONObject) parser.parse(record.value());
 
                     Long memberId = Long.parseLong(((JSONObject) jsonObject.get("data")).get("memberId").toString());
@@ -72,42 +72,31 @@ public class SuiteAnpConsumer implements AcknowledgingMessageListener<String, St
             slackMessage.sendNotification(record.topic() + "메시지 소비 횟수가 3번이 넘었지만 에러가 발생하였습니다.");
             acknowledgment.acknowledge(); // 최종적으로 메시지 처리 완료로 표시
         }
-    }
-
-
-
-
-
-
-
-
-
-    /*@KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory", errorHandler = "errorHandler")
-    public void consume(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) throws IOException {
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObject = (JSONObject) parser.parse(record.value());
-
-            Long memberId = Long.parseLong(((JSONObject) jsonObject.get("data")).get("memberId").toString());
-            String fcm = ((JSONObject) jsonObject.get("data")).get("fcm").toString();
-            System.out.println("Attempt: " + attempt);
-            if (attempt <= 3) {
-                attempt++;
-                throw new RuntimeException("Forcing error for retry");
-            }
-
-            anpOfMemberRepository.save(
-                    AnpOfMember.builder()
-                            .memberId(memberId)
-                            .fcmToken(fcm)
-                            .point(0L)
-                            .alarmCount(0L).build()
-            );
-            acknowledgment.acknowledge();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }*/
+
+    @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
+    public void consume(ConsumerRecord<String, String> record) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        int retryCount = 0;
+
+        JSONObject jsonObject = (JSONObject) parser.parse(record.value());
+
+        Long memberId = Long.parseLong(((JSONObject) jsonObject.get("data")).get("memberId").toString());
+        String fcm = ((JSONObject) jsonObject.get("data")).get("fcm").toString();
+        System.out.println("retryCount: " + retryCount);
+        if(retryCount < 3) {
+            throw new RuntimeException();
+        }
+
+        anpOfMemberRepository.save(
+                AnpOfMember.builder()
+                        .memberId(memberId)
+                        .fcmToken(fcm)
+                        .point(0L)
+                        .alarmCount(0L).build()
+        );
+
+    }
 
 
 }
