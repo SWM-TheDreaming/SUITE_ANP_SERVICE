@@ -15,12 +15,9 @@ public class SuiteAnpProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendRollBackMessage(String topic, Object data) {
-        log.info("SuiteRoom-Join-Error message : {}", data);
-        JSONObject obj = new JSONObject();
-        obj.put("uuid", "SuiteAnpProducer/" + Instant.now().toEpochMilli());
-        obj.put("data", data);
-        this.kafkaTemplate.send(topic, obj.toJSONString());
+    public void sendMessage(String topic, String data) {
+        log.info("{} message : {}", topic, data);
+        this.kafkaTemplate.send(topic, data);
     }
 
 }

@@ -1,11 +1,14 @@
 package com.suite.suite_anp_service.kafka.config;
 
+import com.suite.suite_anp_service.exception.PaymentFailedException;
+import com.suite.suite_anp_service.exception.RepositoryException;
 import com.suite.suite_anp_service.slack.SlackMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -79,7 +82,7 @@ public class KafkaConfig {
             String fullErrorMessage = errorMessage + "\n\n```\n" + exception + "\n```"; // 코드 블럭으로 감싸기
             slackMessage().sendNotification(fullErrorMessage);
         }, new FixedBackOff(1000L, 3)); // 1초 간격으로 최대 3번
-        errorHandler.addNotRetryableExceptions(IllegalArgumentException.class);
+        errorHandler.addNotRetryableExceptions();
 
         return errorHandler;
     }
