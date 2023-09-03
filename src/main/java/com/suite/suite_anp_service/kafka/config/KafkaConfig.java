@@ -51,7 +51,6 @@ public class KafkaConfig {
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "suite");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         // auto.commit 설정을 수동으로 변경
@@ -73,8 +72,8 @@ public class KafkaConfig {
 
     private DefaultErrorHandler slackErrorHandler() {
         DefaultErrorHandler errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
-            log.error("[Error] topic = {}, key = {}, value = {}, error message = {}", consumerRecord.topic(),
-                    consumerRecord.key(), consumerRecord.value(), exception.getMessage());
+            log.error("[Error] topic = {}, key = {}, value = {}, offset = {}, error message = {}", consumerRecord.topic(),
+                    consumerRecord.key(), consumerRecord.value(), consumerRecord.offset(), exception.getMessage());
 
             String errorMessage = "*에러 발생*: _<!channel> " + consumerRecord.topic() + " 메시지 처리 중 예외 발생_\n" + exception.getMessage();
             String fullErrorMessage = errorMessage + "\n\n```\n" + exception + "\n```"; // 코드 블럭으로 감싸기

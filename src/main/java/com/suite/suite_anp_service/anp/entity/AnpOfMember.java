@@ -1,5 +1,6 @@
 package com.suite.suite_anp_service.anp.entity;
 
+import com.suite.suite_anp_service.exception.PaymentFailedException;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -16,16 +17,26 @@ public class AnpOfMember {
     private String fcmToken;
 
     @Column(name = "point")
-    private Long point;
+    private Integer point;
 
     @Column(name = "alarm_count")
     private Long alarmCount;
 
     @Builder
-    public AnpOfMember(Long memberId, String fcmToken, Long point, Long alarmCount) {
+    public AnpOfMember(Long memberId, String fcmToken, Integer point, Long alarmCount) {
         this.memberId = memberId;
         this.fcmToken = fcmToken;
         this.point = point;
         this.alarmCount = alarmCount;
+    }
+
+    public void payPoints(Integer point) {
+        if(this.point - point >= 0)
+            this.point -= point;
+        else throw new PaymentFailedException();
+    }
+
+    public void increaseAlarmCount() {
+        this.alarmCount += 1;
     }
 }
