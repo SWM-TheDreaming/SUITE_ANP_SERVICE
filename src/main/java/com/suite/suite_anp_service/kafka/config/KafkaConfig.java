@@ -1,5 +1,6 @@
 package com.suite.suite_anp_service.kafka.config;
 
+import com.suite.suite_anp_service.anp.dto.ResAnpOfMemberDto;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
 import com.suite.suite_anp_service.exception.RepositoryException;
 import com.suite.suite_anp_service.slack.SlackMessage;
@@ -12,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
@@ -29,6 +31,8 @@ import java.util.Map;
 @Configuration
 @Slf4j
 public class KafkaConfig {
+
+    public static final String GET_POINT_URI = "http://localhost:8088/anp/point/";
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -82,7 +86,7 @@ public class KafkaConfig {
             String fullErrorMessage = errorMessage + "\n\n```\n" + exception + "\n```"; // 코드 블럭으로 감싸기
             slackMessage().sendNotification(fullErrorMessage);
         }, new FixedBackOff(1000L, 3)); // 1초 간격으로 최대 3번
-        errorHandler.addNotRetryableExceptions();
+        errorHandler.addNotRetryableExceptions(PaymentFailedException.class, ParseException.class, RepositoryException.class);
 
         return errorHandler;
     }

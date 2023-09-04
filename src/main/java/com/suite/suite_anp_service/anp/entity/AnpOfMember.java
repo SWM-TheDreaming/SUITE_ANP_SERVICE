@@ -1,5 +1,6 @@
 package com.suite.suite_anp_service.anp.entity;
 
+import com.suite.suite_anp_service.anp.dto.ResAnpOfMemberDto;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -38,5 +39,11 @@ public class AnpOfMember {
 
     public void increaseAlarmCount() {
         this.alarmCount += 1;
+    }
+
+    public ResAnpOfMemberDto toResAnpOfMemberDto() {
+        return ResAnpOfMemberDto.builder()
+                .memberId(memberId)
+                .point(point).build();
     }
 }

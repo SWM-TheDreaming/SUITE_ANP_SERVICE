@@ -70,8 +70,7 @@ public class SuiteAnpConsumer {
             //알림 전송 코드
         } catch (PaymentFailedException e) {
             log.error("Payment failed: Insufficient points -> While member {} is entering room {}", memberId, suiteRoomId);
-            //rollback 진행
-            suiteAnpProducer.sendMessage(DEPOSIT_PAYMENT_ERROR, record.value());
+            //결제 실패 알림
         }
     }
 
