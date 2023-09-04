@@ -30,16 +30,12 @@ public class SuiteAnpConsumer {
     @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
     public void userRegistrationFCMConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        int retryCount = 0;
 
         JSONObject jsonObject = (JSONObject) parser.parse(record.value());
         JSONObject data = ((JSONObject) jsonObject.get("data"));
         Long memberId = Long.parseLong(data.get("memberId").toString());
         String fcm = data.get("fcm").toString();
 
-        /*if(retryCount < 3) {
-            throw new RuntimeException();
-        }*/
         anpOfMemberRepository.save(
                 AnpOfMember.builder()
                         .memberId(memberId)
