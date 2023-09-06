@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import javax.persistence.RollbackException;
 import java.io.IOException;
 
 @Service
@@ -24,8 +26,8 @@ import java.io.IOException;
 public class SuiteAnpConsumer {
     private final AnpOfMemberRepository anpOfMemberRepository;
     private final SuiteAnpProducer suiteAnpProducer;
-    @Value("${topic.DEPOSIT_PAYMENT_ERROR}") private String DEPOSIT_PAYMENT_ERROR;
     @Value("${topic.SUITEROOM_JOIN}") private String SUITEROOM_JOIN;
+    @Value("${topic.SUITEROOM_CANCELJOIN_ERROR}") private String SUITEROOM_CANCELJOIN_ERROR;
 
     @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
     public void userRegistrationFCMConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
@@ -66,9 +68,33 @@ public class SuiteAnpConsumer {
             //알림 전송 코드
         } catch (PaymentFailedException e) {
             log.error("Payment failed: Insufficient points -> While member {} is entering room {}", memberId, suiteRoomId);
-            //결제 실패 알림
         }
     }
+
+    @Transactional
+    @KafkaListener(topics = "${topic.SUITEROOM_CANCELJOIN}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    public void suiteRoomCancelJoinConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+
+        JSONObject jsonObject = (JSONObject) parser.parse(record.value());
+        JSONObject data = ((JSONObject) jsonObject.get("data"));
+        Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
+        JSONObject authorizerDto = ((JSONObject) data.get("authorizerDto"));
+        int depositAmount = Integer.parseInt(data.get("depositAmount").toString());
+        Long memberId = Long.parseLong(authorizerDto.get("memberId").toString());
+
+        try {
+            AnpOfMember anpOfMember = anpOfMemberRepository.findByMemberId(memberId).orElseThrow(() -> new RepositoryException());
+            anpOfMember.refundPoints(depositAmount);
+            anpOfMember.increaseAlarmCount();
+            //알림 전송 코드
+        } catch (Exception e) {
+            log.error("Refund failed -> While member {} is entering room {}", memberId, suiteRoomId);
+            suiteAnpProducer.sendMessage(SUITEROOM_CANCELJOIN_ERROR, record.value());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+    }
+
 
 
 }

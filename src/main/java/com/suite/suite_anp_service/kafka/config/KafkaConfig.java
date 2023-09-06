@@ -77,7 +77,15 @@ public class KafkaConfig {
         return factory;
     }
 
-    private DefaultErrorHandler slackErrorHandler() {
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerDefaultContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public DefaultErrorHandler slackErrorHandler() {
         DefaultErrorHandler errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
             log.error("[Error] topic = {}, key = {}, value = {}, offset = {}, error message = {}", consumerRecord.topic(),
                     consumerRecord.key(), consumerRecord.value(), consumerRecord.offset(), exception.getMessage());

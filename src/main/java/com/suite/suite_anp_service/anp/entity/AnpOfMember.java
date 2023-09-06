@@ -4,6 +4,7 @@ import com.suite.suite_anp_service.anp.dto.ResAnpOfMemberDto;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 
@@ -35,6 +36,11 @@ public class AnpOfMember {
         if(this.point - point >= 0)
             this.point -= point;
         else throw new PaymentFailedException();
+    }
+
+    @Transactional
+    public void refundPoints(Integer point) {
+        this.point += point;
     }
 
     public void increaseAlarmCount() {
