@@ -39,3 +39,4 @@ out/
 ### yml ###
 *.yml
 *.properties
+/src/main/resources/firebase/suite-firebase-admin.json

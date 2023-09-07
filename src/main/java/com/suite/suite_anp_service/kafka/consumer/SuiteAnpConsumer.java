@@ -1,5 +1,13 @@
 package com.suite.suite_anp_service.kafka.consumer;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.suite.suite_anp_service.alarm.dto.AlarmCategory;
+import com.suite.suite_anp_service.alarm.dto.AlarmMessage;
+import com.suite.suite_anp_service.alarm.service.AlarmService;
+import com.suite.suite_anp_service.alarm.service.AlarmServiceImpl;
 import com.suite.suite_anp_service.anp.entity.AnpOfMember;
 import com.suite.suite_anp_service.anp.repository.AnpOfMemberRepository;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
@@ -26,6 +34,7 @@ import java.io.IOException;
 public class SuiteAnpConsumer {
     private final AnpOfMemberRepository anpOfMemberRepository;
     private final SuiteAnpProducer suiteAnpProducer;
+    private final AlarmService alarmService;
     @Value("${topic.SUITEROOM_JOIN}") private String SUITEROOM_JOIN;
     @Value("${topic.SUITEROOM_CANCELJOIN_ERROR}") private String SUITEROOM_CANCELJOIN_ERROR;
 
@@ -57,8 +66,10 @@ public class SuiteAnpConsumer {
         JSONObject data = ((JSONObject) jsonObject.get("data"));
         Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
         JSONObject authorizerDto = ((JSONObject) data.get("authorizerDto"));
+        String suiteRoomTitle = String.valueOf(data.get("suiteRoomTitle"));
         int depositAmount = Integer.parseInt(data.get("depositAmount").toString());
         Long memberId = Long.parseLong(authorizerDto.get("memberId").toString());
+        boolean isHost = (boolean) data.get("isHost");
 
         try {
             AnpOfMember anpOfMember = anpOfMemberRepository.findByMemberId(memberId).orElseThrow(() -> new RepositoryException());
@@ -66,10 +77,16 @@ public class SuiteAnpConsumer {
             suiteAnpProducer.sendMessage(SUITEROOM_JOIN, record.value());
             anpOfMember.increaseAlarmCount();
             //알림 전송 코드
+            if(!isHost) {
+                AnpOfMember host = anpOfMemberRepository.findByMemberId(Long.parseLong(data.get("hostMemberId").toString())).orElseThrow(() -> new RepositoryException());
+                alarmService.saveAlarmHistory(host.getMemberId(), suiteRoomTitle, suiteRoomId, host.getFcmToken(), AlarmCategory.SuiteRoom, AlarmMessage.EnterSuiteRoom);
+            }
+
         } catch (PaymentFailedException e) {
             log.error("Payment failed: Insufficient points -> While member {} is entering room {}", memberId, suiteRoomId);
         }
     }
+
 
     @Transactional
     @KafkaListener(topics = "${topic.SUITEROOM_CANCELJOIN}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
@@ -80,21 +97,26 @@ public class SuiteAnpConsumer {
         JSONObject data = ((JSONObject) jsonObject.get("data"));
         Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
         JSONObject authorizerDto = ((JSONObject) data.get("authorizerDto"));
+        String suiteRoomTitle = String.valueOf(data.get("suiteRoomTitle"));
         int depositAmount = Integer.parseInt(data.get("depositAmount").toString());
         Long memberId = Long.parseLong(authorizerDto.get("memberId").toString());
+        boolean isHost = (boolean) data.get("isHost");
 
         try {
             AnpOfMember anpOfMember = anpOfMemberRepository.findByMemberId(memberId).orElseThrow(() -> new RepositoryException());
             anpOfMember.refundPoints(depositAmount);
             anpOfMember.increaseAlarmCount();
             //알림 전송 코드
+            if(!isHost) {
+                AnpOfMember host = anpOfMemberRepository.findByMemberId(Long.parseLong(data.get("hostMemberId").toString())).orElseThrow(() -> new RepositoryException());
+                alarmService.saveAlarmHistory(host.getMemberId(), suiteRoomTitle, suiteRoomId, host.getFcmToken(), AlarmCategory.SuiteRoom, AlarmMessage.ExitSuiteRoom);
+            }
         } catch (Exception e) {
             log.error("Refund failed -> While member {} is entering room {}", memberId, suiteRoomId);
             suiteAnpProducer.sendMessage(SUITEROOM_CANCELJOIN_ERROR, record.value());
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
     }
-
 
 
 }

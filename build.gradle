@@ -40,6 +40,8 @@ dependencies {
 	implementation 'org.springframework.kafka:spring-kafka:2.8.5'
 
 	implementation 'com.slack.api:slack-api-client:1.29.0'
+
+	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 
 tasks.named('test') {

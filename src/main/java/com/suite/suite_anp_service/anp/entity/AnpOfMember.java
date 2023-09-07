@@ -3,18 +3,21 @@ package com.suite.suite_anp_service.anp.entity;
 import com.suite.suite_anp_service.anp.dto.ResAnpOfMemberDto;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @Table(name = "anp_of_member")
 public class AnpOfMember {
     @Id
     @Column(name = "member_id", unique = true, nullable = false)
     private Long memberId;
+
     @Column(name = "fcm_token")
     private String fcmToken;
 
