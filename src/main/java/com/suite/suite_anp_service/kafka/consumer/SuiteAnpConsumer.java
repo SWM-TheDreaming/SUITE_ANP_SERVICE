@@ -1,13 +1,8 @@
 package com.suite.suite_anp_service.kafka.consumer;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import com.suite.suite_anp_service.alarm.dto.AlarmCategory;
 import com.suite.suite_anp_service.alarm.dto.AlarmMessage;
 import com.suite.suite_anp_service.alarm.service.AlarmService;
-import com.suite.suite_anp_service.alarm.service.AlarmServiceImpl;
 import com.suite.suite_anp_service.anp.entity.AnpOfMember;
 import com.suite.suite_anp_service.anp.repository.AnpOfMemberRepository;
 import com.suite.suite_anp_service.exception.PaymentFailedException;
@@ -16,6 +11,7 @@ import com.suite.suite_anp_service.kafka.producer.SuiteAnpProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import javax.persistence.RollbackException;
 import java.io.IOException;
 
 @Service
@@ -118,5 +113,22 @@ public class SuiteAnpConsumer {
         }
     }
 
+    @Transactional
+    @KafkaListener(topics = "${topic.START_NOTIFICATION}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    public void startNotificationConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(record.value());
+        JSONObject data = ((JSONObject) jsonObject.get("data"));
+        Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
+        String suiteRoomTitle = String.valueOf(data.get("suiteRoomTitle"));
+        JSONArray participants = ((JSONArray) jsonObject.get("participants"));
+        AnpOfMember member;
+        for(Object obj : participants) {
+            JSONObject participant = (JSONObject) obj;
+            member = anpOfMemberRepository.findByMemberId(Long.parseLong(participant.get("memberId").toString())).orElseThrow(() -> new RepositoryException());
+            alarmService.saveAlarmHistory(member.getMemberId(), suiteRoomTitle, suiteRoomId, member.getFcmToken(), AlarmCategory.SuiteRoom, AlarmMessage.StartSuiteRoom);
+        }
+
+    }
 
 }

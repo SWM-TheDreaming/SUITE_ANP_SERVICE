@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AlarmMessage {
     Test("테스트입니다."),
+    StartSuiteRoom("스터디가 시작되었습니다."),
     EnterSuiteRoom("스위트룸에 체크인하셨습니다."),
     ExitSuiteRoom("스위트룸을 나갔습니다."),
     PayComplete("보증급 납부가 완료되었습니다."),
