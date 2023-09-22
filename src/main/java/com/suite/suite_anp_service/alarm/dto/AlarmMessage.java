@@ -10,6 +10,7 @@ public enum AlarmMessage {
     StartSuiteRoom("스터디가 시작되었습니다."),
     EnterSuiteRoom("스위트룸에 체크인하셨습니다."),
     ExitSuiteRoom("스위트룸을 나갔습니다."),
+    DeleteSuiteRoom("방장이 스위트룸을 파투하였습니다."),
     PayComplete("보증급 납부가 완료되었습니다."),
     PayFailed("보증금 납부에 실패하였습니다."),
     Refund("보증금을 환불하였습니다."),

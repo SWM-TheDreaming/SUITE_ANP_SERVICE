@@ -32,6 +32,7 @@ public class SuiteAnpConsumer {
     private final AlarmService alarmService;
     @Value("${topic.SUITEROOM_JOIN}") private String SUITEROOM_JOIN;
     @Value("${topic.SUITEROOM_CANCELJOIN_ERROR}") private String SUITEROOM_CANCELJOIN_ERROR;
+    @Value("${topic.SUITEROOM_TERMINATE_COMPLETE}") private String SUITEROOM_TERMINATE_COMPLETE;
 
     @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
     public void userRegistrationFCMConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
@@ -121,14 +122,36 @@ public class SuiteAnpConsumer {
         JSONObject data = ((JSONObject) jsonObject.get("data"));
         Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
         String suiteRoomTitle = String.valueOf(data.get("suiteRoomTitle"));
-        JSONArray participants = ((JSONArray) jsonObject.get("participants"));
+        JSONArray participants = ((JSONArray) data.get("participants"));
         AnpOfMember member;
         for(Object obj : participants) {
             JSONObject participant = (JSONObject) obj;
             member = anpOfMemberRepository.findByMemberId(Long.parseLong(participant.get("memberId").toString())).orElseThrow(() -> new RepositoryException());
+            member.increaseAlarmCount();
             alarmService.saveAlarmHistory(member.getMemberId(), suiteRoomTitle, suiteRoomId, member.getFcmToken(), AlarmCategory.SuiteRoom, AlarmMessage.StartSuiteRoom);
         }
 
+    }
+
+    @Transactional
+    @KafkaListener(topics = "${topic.SUITEROOM_TERMINATE}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    public void terminateSuiteRoomConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(record.value());
+        JSONObject data = ((JSONObject) jsonObject.get("data"));
+        Long suiteRoomId = Long.parseLong(data.get("suiteRoomId").toString());
+        String title = data.get("title").toString();
+        int depositAmount = Integer.parseInt(data.get("depositAmount").toString());
+        JSONArray participants = ((JSONArray) data.get("participants"));
+        AnpOfMember member;
+        for(Object obj : participants) {
+            JSONObject participant = (JSONObject) obj;
+            member = anpOfMemberRepository.findByMemberId(Long.parseLong(participant.get("memberId").toString())).orElseThrow(() -> new RepositoryException());
+            member.refundPoints(depositAmount);
+            member.increaseAlarmCount();
+            alarmService.saveAlarmHistory(member.getMemberId(), title, suiteRoomId, member.getFcmToken(), AlarmCategory.SuiteRoom, AlarmMessage.DeleteSuiteRoom);
+        }
+        suiteAnpProducer.sendMessage(SUITEROOM_TERMINATE_COMPLETE, record.value());
     }
 
 }
