@@ -23,12 +23,12 @@ jobs:
 #          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
 #          cat ./src/main/resources/firebase/suite-firebase-admin.json
       - name: production firebase-config file setting
+        run: |
+          mkdir -p ./src/main/resources/firebase
+          touch ./src/main/resources/firebase/suite-firebase-admin.json
         id: fire_base_setting
         uses: jsdaniell/create-json@v1.2.2
         with:
-          run: |
-            mkdir -p ./src/main/resources/firebase
-            touch ./src/main/resources/firebase/suite-firebase-admin.json
           name: "suite-firebase-admin.json"
           json: ${{ secrets.FIREBASE_CONFIG }}
           dir: './src/main/resources/firebase'
