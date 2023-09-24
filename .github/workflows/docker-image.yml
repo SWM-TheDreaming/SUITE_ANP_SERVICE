@@ -36,6 +36,7 @@ jobs:
       - name: Move firebase json file
         run: |
           mv suite-firebase-admin.json ./src/main/resources/firebase/suite-firebase-admin.json
+          cat ./src/main/resources/firebase/suite-firebase-admin.json
 
       - uses: actions/upload-artifact@v2
         with:
