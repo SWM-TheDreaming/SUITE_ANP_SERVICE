@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir -p ./src/main/resources/firebase
           echo "${{ secrets.FIREBASE_CONFIG }}" >> ./src/main/resources/firebase/suite-firebase-admin.json
+          cat ./src/main/resources/firebase/suite-firebase-admin.json
           
 
       - name: Set up JDK 11
