@@ -43,7 +43,14 @@ dependencies {
 
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
-
+sourceSets {
+	main {
+		resources {
+			srcDirs = ['src/main/resources']
+		}
+	}
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
