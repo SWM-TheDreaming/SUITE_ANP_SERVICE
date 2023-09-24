@@ -49,7 +49,6 @@ sourceSets {
 			srcDirs = ['src/main/resources']
 		}
 	}
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 tasks.named('test') {
