@@ -28,6 +28,7 @@ jobs:
         with:
           run: |
             mkdir -p ./src/main/resources/firebase
+            touch ./src/main/resources/firebase/suite-firebase-admin.json
           name: "suite-firebase-admin.json"
           json: ${{ secrets.FIREBASE_CONFIG }}
           dir: './src/main/resources/firebase'
