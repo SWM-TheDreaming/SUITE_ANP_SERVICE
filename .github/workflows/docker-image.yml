@@ -23,7 +23,7 @@ jobs:
 #          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
 #          cat ./src/main/resources/firebase/suite-firebase-admin.json
       - name: production firebase-config file setting
-        id: production firebase-config file setting # First ID
+        id: fire_base_setting
         uses: jsdaniell/create-json@v1.2.2
         with:
           run: |
