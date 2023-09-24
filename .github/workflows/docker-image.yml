@@ -33,6 +33,9 @@ jobs:
           name: "suite-firebase-admin.json"
           json: ${{secrets.FIREBASE_CONFIG}}
 
+      - name: Debug Base64 Encoded JSON
+        run: echo "${{ steps.create-firebase-json.outputs.json }}"
+
       - name: Move firebase json file
         run: |  
           mv suite-firebase-admin.json ./src/main/resources/firebase/suite-firebase-admin.json
