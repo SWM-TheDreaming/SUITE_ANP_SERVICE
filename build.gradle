@@ -8,6 +8,8 @@ group = 'com.suite'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jar.enabled = false
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -43,6 +45,7 @@ dependencies {
 
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
