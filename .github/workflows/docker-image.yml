@@ -50,7 +50,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.1.1
-          arguments: build
+          arguments: build --scan
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
