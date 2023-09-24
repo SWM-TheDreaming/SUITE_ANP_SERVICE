@@ -24,7 +24,14 @@ jobs:
       - name: production firebase-config file setting
         run: |
           mkdir -p ./src/main/resources/firebase
-          echo "${{secrets.FIREBASE_CONFIG}}" | base64 --decode >> ./src/main/resources/firebase/suite-firebase-admin.json 
+          touch ./src/main/resources/firebase/suite-firebase-admin.json
+
+      - name: Create firebase json file
+        id: create-firebase-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "suite-firebase-admin.json"
+          json: ${{secrets.FIREBASE_CONFIG}}
 
       - uses: actions/upload-artifact@v2
         with:
