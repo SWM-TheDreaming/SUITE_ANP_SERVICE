@@ -44,11 +44,6 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 
-processResources {
-	from 'src/main/resources' // 리소스 디렉터리
-	into 'build/resources/main' // 복사할 위치
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
 
 tasks.named('test') {
 	useJUnitPlatform()
