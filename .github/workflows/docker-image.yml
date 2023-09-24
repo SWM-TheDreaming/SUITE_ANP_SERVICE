@@ -25,7 +25,7 @@ jobs:
           mkdir -p ./src/main/resources/firebase
           touch ./src/main/resources/firebase/suite-firebase-admin.json
           echo $secrets.FIREBASE_CONFIG >> ./src/main/resources/firebase/suite-firebase-admin.json
-          cat $secrets.FIREBASE_CONFIG
+          cat ${{secrets.FIREBASE_CONFIG}}
           
       - uses: actions/upload-artifact@v2
         with:
