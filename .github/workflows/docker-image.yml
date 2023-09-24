@@ -24,7 +24,7 @@ jobs:
       - name: production firebase-config file setting
         run: |
           mkdir -p ./src/main/resources/firebase
-          touch ./src/main/resources/firebase/suite-firebase-admin.json
+          
 
       - name: Create firebase json file
         id: create-firebase-json
