@@ -32,7 +32,7 @@ jobs:
         with:
           name: "suite-firebase-admin.json"
           json: ${{secrets.FIREBASE_CONFIG}}
-          dir: ./src/main/resources/firebase/suite-firebase-admin.json
+          dir: ./src/main/resources/firebase
 
       - name: Debug Base64 Encoded JSON
         run: cat ./src/main/resources/firebase/suite-firebase-admin.json
