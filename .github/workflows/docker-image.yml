@@ -16,10 +16,6 @@ jobs:
         run: |
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application.yml
-      - uses: actions/upload-artifact@v2
-        with:
-          name: application.yml
-          path: ./src/main/resources/application.yml
 
       - name: production firebase-config file setting
         run: |
@@ -33,11 +29,6 @@ jobs:
           name: "suite-firebase-admin.json"
           json: ${{secrets.FIREBASE_CONFIG}}
           dir: ./src/main/resources/firebase
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: suite-firebase-admin.json
-          path: ./src/main/resources/firebase/suite-firebase-admin.json
 
       - name: Print suite-firebase-admin.json contents
         run: |
