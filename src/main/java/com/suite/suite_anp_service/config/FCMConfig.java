@@ -32,10 +32,10 @@ public class FCMConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(resource);
         InputStream refreshToken = resource.getInputStream();
-        if (!isValidJson(refreshToken)) {
-            throw new RuntimeException("Invalid JSON format in the Firebase Admin SDK credentials file.");
-        }
+
         FirebaseApp firebaseApp = null;
         List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
 
