@@ -6,7 +6,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import com.google.gson.stream.JsonReader;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -14,8 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+
 import java.util.List;
 
 @Configuration
@@ -27,8 +26,6 @@ public class FCMConfig {
 
         ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
         InputStream refreshToken = resource.getInputStream();
-        JsonReader reader = new JsonReader(new InputStreamReader(refreshToken, StandardCharsets.UTF_8));
-        reader.setLenient(true);
 
         FirebaseApp firebaseApp = null;
         List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
