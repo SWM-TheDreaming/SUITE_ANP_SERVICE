@@ -1,4 +1,4 @@
-name: Docker Image SUITE_USER_SERVICE CI
+name: Docker Image SUITE_ANP_SERVICE CI
 
 on:
   push:
