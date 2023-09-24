@@ -7,6 +7,8 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @Configuration
+@Slf4j
 public class FCMConfig {
 
 
@@ -26,6 +29,7 @@ public class FCMConfig {
 
         ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
         InputStream refreshToken = resource.getInputStream();
+        log.info("token info @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", refreshToken);
 
         FirebaseApp firebaseApp = null;
         List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
