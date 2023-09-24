@@ -44,17 +44,9 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs 'src/main/resources'
-		}
-	}
-	test {
-		resources {
-			srcDirs 'src/test/resources'
-		}
-	}
+processResources {
+	from 'src/main/resources' // 리소스 디렉터리
+	into 'build/resources/main' // 복사할 위치
 }
 
 tasks.named('test') {
