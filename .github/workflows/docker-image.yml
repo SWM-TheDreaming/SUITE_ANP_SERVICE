@@ -20,15 +20,9 @@ jobs:
       - name: production firebase-config file setting
         run: |
           mkdir -p ./src/main/resources/firebase
-#          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
-#          cat ./src/main/resources/firebase/suite-firebase-admin.json
-      - name: production firebase-config file setting
-        id: fire_base_setting
-        uses: jsdaniell/create-json@v1.2.2
-        with:
-          name: "suite-firebase-admin.json"
-          json: ${{ secrets.FIREBASE_CONFIG }}
-          dir: './src/main/resources/firebase'
+          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
+          cat ./src/main/resources/firebase/suite-firebase-admin.json
+
       - name: show firebase config file
         run: |
           cat ./src/main/resources/firebase/suite-firebase-admin.json
