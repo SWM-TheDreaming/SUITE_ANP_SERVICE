@@ -34,9 +34,10 @@ jobs:
           json: ${{secrets.FIREBASE_CONFIG}}
 
       - name: Move firebase json file
-        run: |
-         echo ${{ steps.create-firebase-json.outputs.json }}
-
+        run: |  
+          mv suite-firebase-admin.json ./src/main/resources/firebase/suite-firebase-admin.json
+          echo ./src/main/resources/firebase/suite-firebase-admin.json | base64 --decode >> ./src/main/resources/firebase/suite-firebase-admin.json
+          cat ./src/main/resources/firebase/suite-firebase-admin.json
 
       - uses: actions/upload-artifact@v2
         with:
