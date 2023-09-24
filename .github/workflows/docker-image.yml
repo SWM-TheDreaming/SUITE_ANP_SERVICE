@@ -17,11 +17,20 @@ jobs:
           mkdir -p ./src/main/resources
           touch ./src/main/resources/application.yml
 
+#      - name: production firebase-config file setting
+#        run: |
+#          mkdir -p ./src/main/resources/firebase
+#          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
+#          cat ./src/main/resources/firebase/suite-firebase-admin.json
       - name: production firebase-config file setting
-        run: |
-          mkdir -p ./src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
-          cat ./src/main/resources/firebase/suite-firebase-admin.json
+        id: production firebase-config file setting # First ID
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          run: |
+            mkdir -p ./src/main/resources/firebase
+          name: "suite-firebase-admin.json"
+          json: ${{ secrets.FIREBASE_CONFIG }}
+          dir: './src/main/resources/firebase'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
