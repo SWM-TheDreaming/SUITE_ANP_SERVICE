@@ -1,5 +1,7 @@
 package com.suite.suite_anp_service.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -14,11 +16,26 @@ import java.util.List;
 
 @Configuration
 public class FCMConfig {
+    private boolean isValidJson(InputStream jsonStream) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Try to parse the JSON
+            JsonNode jsonNode = objectMapper.readTree(jsonStream);
+            // Successfully parsed, so it's a valid JSON
+            return true;
+        } catch (IOException e) {
+            // Failed to parse, it's not a valid JSON
+            return false;
+        }
+    }
+
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
         ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
         InputStream refreshToken = resource.getInputStream();
-
+        if (!isValidJson(refreshToken)) {
+            throw new RuntimeException("Invalid JSON format in the Firebase Admin SDK credentials file.");
+        }
         FirebaseApp firebaseApp = null;
         List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
 
