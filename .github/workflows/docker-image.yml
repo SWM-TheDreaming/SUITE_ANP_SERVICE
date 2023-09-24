@@ -35,8 +35,9 @@ jobs:
 
       - name: Move firebase json file
         run: |
-          echo ${{ steps.create-firebase-json.outputs }} | base64 --decode >> ./src/main/resources/firebase/suite-firebase-admin.json  
-          cat ./src/main/resources/firebase/suite-firebase-admin.json
+#          echo ${{ steps.create-firebase-json.outputs }} | base64 --decode >> ./src/main/resources/firebase/suite-firebase-admin.json
+         echo ${{ steps.create-firebase-json.outputs }} | base64 --decode >> ./src/main/resources/firebase/suite-firebase-admin.json
+
 
       - uses: actions/upload-artifact@v2
         with:
