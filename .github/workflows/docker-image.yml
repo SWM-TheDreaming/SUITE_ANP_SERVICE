@@ -20,7 +20,7 @@ jobs:
       - name: production firebase-config file setting
         run: |
           mkdir -p ./src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_CONFIG }}" | base64 --decode | jq >> ./src/main/resources/firebase/suite-firebase-admin.json
+          echo "${{ secrets.FIREBASE_CONFIG }}" > ./src/main/resources/firebase/suite-firebase-admin.json
           cat ./src/main/resources/firebase/suite-firebase-admin.json
 
       - name: show resources list
