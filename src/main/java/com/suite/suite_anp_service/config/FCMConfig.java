@@ -56,7 +56,8 @@ public class FCMConfig {
 
         // Gson 인스턴스 생성
         Gson gson = new GsonBuilder().setLenient().create();
-
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println(gson);
         try {
             // JSON 데이터 파싱
             InputStreamReader reader = new InputStreamReader(refreshToken);
@@ -70,6 +71,7 @@ public class FCMConfig {
             return FirebaseMessaging.getInstance(firebaseApp);
         } catch (JsonSyntaxException e) {
             e.printStackTrace(); // 원하는 오류 처리 방식으로 변경
+
             return null;
         }
     }
