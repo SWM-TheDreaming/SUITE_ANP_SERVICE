@@ -22,7 +22,7 @@ jobs:
           mkdir -p ./src/main/resources/firebase
           echo -ne "${{ secrets.FIREBASE_CONFIG }}" | base64 -d >> ./src/main/resources/firebase/suite-firebase-admin.json
           cat ./src/main/resources/firebase/suite-firebase-admin.json
-          cd ./src/main/java/com/suite/suite/suite_anp_service
+          cd ./src/main/java/com/suite/suite_anp_service
           ls -al
           
 
