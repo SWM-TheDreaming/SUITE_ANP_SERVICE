@@ -47,6 +47,7 @@ dependencies {
 	implementation 'com.slack.api:slack-api-client:1.29.0'
 
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
+
 }
 
 

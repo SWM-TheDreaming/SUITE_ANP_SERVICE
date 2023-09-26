@@ -22,24 +22,28 @@ import java.util.List;
 public class FCMConfig {
 
     @Bean
-    FirebaseMessaging firebaseMessaging() throws IOException {
+    FirebaseMessaging firebaseMessaging()  {
+        try {
+            ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
+            InputStream refreshToken = resource.getInputStream();
+            FirebaseApp firebaseApp = null;
+            List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
 
-        ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
-        InputStream refreshToken = resource.getInputStream();
-        FirebaseApp firebaseApp = null;
-        List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
-
-        if(firebaseAppList != null && !firebaseAppList.isEmpty()) {
-            for(FirebaseApp app : firebaseAppList) {
-                if(app.getName().equals(FirebaseApp.DEFAULT_APP_NAME))
-                    firebaseApp = app;
+            if(firebaseAppList != null && !firebaseAppList.isEmpty()) {
+                for(FirebaseApp app : firebaseAppList) {
+                    if(app.getName().equals(FirebaseApp.DEFAULT_APP_NAME))
+                        firebaseApp = app;
+                }
+            } else {
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(refreshToken)).build();
+                firebaseApp = FirebaseApp.initializeApp(options);
             }
-        } else {
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(refreshToken)).build();
-            firebaseApp = FirebaseApp.initializeApp(options);
+            return FirebaseMessaging.getInstance(firebaseApp);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return FirebaseMessaging.getInstance(firebaseApp);
+        return null;
     }
 
 }
