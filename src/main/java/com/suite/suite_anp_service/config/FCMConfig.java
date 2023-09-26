@@ -51,13 +51,16 @@ public class FCMConfig {
 //    }
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
         ClassPathResource resource = new ClassPathResource("firebase/suite-firebase-admin.json");
+        System.out.println(resource);
         InputStream refreshToken = resource.getInputStream();
+        System.out.println(refreshToken);
 
         // Gson 인스턴스 생성
         Gson gson = new GsonBuilder().setLenient().create();
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println(gson);
+
         try {
             // JSON 데이터 파싱
             InputStreamReader reader = new InputStreamReader(refreshToken);
@@ -71,7 +74,8 @@ public class FCMConfig {
             return FirebaseMessaging.getInstance(firebaseApp);
         } catch (JsonSyntaxException e) {
             e.printStackTrace(); // 원하는 오류 처리 방식으로 변경
-
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println(gson);
             return null;
         }
     }
