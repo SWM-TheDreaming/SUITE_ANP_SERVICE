@@ -34,7 +34,7 @@ public class SuiteAnpConsumer {
     @Value("${topic.SUITEROOM_CANCELJOIN_ERROR}") private String SUITEROOM_CANCELJOIN_ERROR;
     @Value("${topic.SUITEROOM_TERMINATE_COMPLETE}") private String SUITEROOM_TERMINATE_COMPLETE;
 
-    @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "${topic.USER_REGISTRATION_FCM}", groupId = "userRegistrationFCMConsumers", containerFactory = "kafkaListenerContainerFactory")
     public void userRegistrationFCMConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
 
@@ -54,7 +54,7 @@ public class SuiteAnpConsumer {
     }
 
     @Transactional
-    @KafkaListener(topics = "${topic.DEPOSIT_PAYMENT}", groupId = "suite", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "${topic.DEPOSIT_PAYMENT}", groupId = "depositPaymentConsumers", containerFactory = "kafkaListenerContainerFactory")
     public void suiteRoomJoinConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
 
@@ -85,7 +85,7 @@ public class SuiteAnpConsumer {
 
 
     @Transactional
-    @KafkaListener(topics = "${topic.SUITEROOM_CANCELJOIN}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    @KafkaListener(topics = "${topic.SUITEROOM_CANCELJOIN}", groupId = "suiteRoomCancelJoinConsumers", containerFactory = "kafkaListenerDefaultContainerFactory")
     public void suiteRoomCancelJoinConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
 
@@ -115,7 +115,7 @@ public class SuiteAnpConsumer {
     }
 
     @Transactional
-    @KafkaListener(topics = "${topic.START_NOTIFICATION}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    @KafkaListener(topics = "${topic.START_NOTIFICATION}", groupId = "startNotificationConsumers", containerFactory = "kafkaListenerDefaultContainerFactory")
     public void startNotificationConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(record.value());
@@ -134,7 +134,7 @@ public class SuiteAnpConsumer {
     }
 
     @Transactional
-    @KafkaListener(topics = "${topic.SUITEROOM_TERMINATE}", groupId = "suite", containerFactory = "kafkaListenerDefaultContainerFactory")
+    @KafkaListener(topics = "${topic.SUITEROOM_TERMINATE}", groupId = "suiteRoomTerminateConsumers", containerFactory = "kafkaListenerDefaultContainerFactory")
     public void terminateSuiteRoomConsume(ConsumerRecord<String, String> record) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(record.value());
