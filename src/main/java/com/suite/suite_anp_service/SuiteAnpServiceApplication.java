@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 })
 public class SuiteAnpServiceApplication {
 	public static void main(String[] args) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		SpringApplication.run(SuiteAnpServiceApplication.class, args);
 	}
 }
