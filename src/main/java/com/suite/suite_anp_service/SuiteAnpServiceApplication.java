@@ -19,4 +19,5 @@ public class SuiteAnpServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SuiteAnpServiceApplication.class, args);
 	}
+
 }
