@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 		"com.suite.suite_anp_service.alarm",
 		"com.suite.suite_anp_service.payment"
 })
-@EntityScan(basePackages = {"com.suite.suite_anp_service.anp.entity", "com.suite.suite_anp_service.alarm.entity", "com.suite.suite_anp_service.payment.entity"})
 public class SuiteAnpServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SuiteAnpServiceApplication.class, args);
