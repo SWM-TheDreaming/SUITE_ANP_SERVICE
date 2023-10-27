@@ -47,7 +47,7 @@ public class SuiteAnpConsumer {
                 AnpOfMember.builder()
                         .memberId(memberId)
                         .fcmToken(fcm)
-                        .point(0)
+                        .point(5000)
                         .alarmCount(0L).build()
         );
 
